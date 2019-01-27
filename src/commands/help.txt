@@ -1,10 +1,11 @@
-Oi eu sou o *Alfredo BOT :)*              
-Vou te apresentar meus comandos          
- 
- 
-*/joke* _Eu te contarei uma piada_                        
-*/wolf* _Mostra comandos do werewolf_
-                                        
-                                        
-Eu demoro cerca de *1 segundo* para ler mensagens caso eu não te dê atenção é porque sua mensagem passou despercebida 
+Oi ✌ Eu sou o Alfredo BOT 🤖
+Vou te apresentar algum dos meu comandos 🖥
 
+
+/joke Eu te contarei uma piada  🤣                    
+/wolf Mostra comandos do werewolf 🐺
+
+
+Os comandos podem ser enviados com letras maiúsculas, minúsculas ou ambas 🔡🔠
+/HELP /help
+Caso eu não te dê atenção é porque sua mensagem passou despercebida 😕
