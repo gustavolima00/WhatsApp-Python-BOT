@@ -14,13 +14,6 @@ SEARCH_CLOSE = 'C28xL'
 MSG_BOX = '_1Plpp'
 SEND_BUTTON = '_35EW6'
 
-#Abrindo piadas
-jokes_arq = open('jokes.txt', 'r')
-texto = jokes_arq.read()
-jokes = texto.split('#')
-jokes_arq.close()
-jokes_tam = len(jokes)
-
 class Chat:
 	def __init__(self, chat_type, name, qnt_messages):
 		self.name = name
@@ -36,10 +29,21 @@ def send_message(driver, text):
 	send_button = driver.find_element_by_class_name(SEND_BUTTON)
 	send_button.click()
 
-def send_joke(driver):
-	random_num = randint(0, jokes_tam-1)
-	message = jokes[random_num]
-	send_message(driver, message)
+def run_command(driver, command):
+	try:
+		arq_path = 'commands/' + command + '.txt'
+		arq = open(arq_path, 'r')
+		text = arq.read()
+		phrases = text.split('#')
+		num = len(phrases)
+		arq.close()
+		random_num = randint(0, num-1)
+		message = phrases[random_num]
+		send_message(driver, message)
+	except FileNotFoundError:
+		send_message(driver, 'Comando não encontrado')
+
+	
 
 def find_user(driver, username):
 	search_box = driver.find_element_by_class_name(SEARCH_BOX)

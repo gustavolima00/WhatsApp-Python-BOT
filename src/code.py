@@ -4,10 +4,6 @@ from datetime import datetime
 import time
 from selenium.common.exceptions import NoSuchElementException
 
-#Abrindo mensagem inicial
-help_arq = open('help_text.txt', 'r')
-help_text = help_arq.read()
-
 driver = webdriver.Chrome()
 driver.get('https://web.whatsapp.com/')
 input('Insira o QR e aperte enter')
@@ -25,14 +21,12 @@ while True:
 			print('Mensagens:', messages)
 			
 			for message in messages:
-				if(message == '/help'):
-					send_message(driver, help_text)
-				elif(message == '/joke'):
-					send_joke(driver)
-				elif(message == '/startwerewolf'):
-					send_message(driver, 'Função não disponível')
-				elif(message == '/helpwerewolf'):
-					send_message(driver, 'Função não disponível')
+				if(message[0] == '/'):
+					print('Rodando comando:', message[1:])
+					try:
+						run_command(driver, message[1:])
+					except FileNotFoundError as error:
+						print('Peguei um erro', error)
 	except NoSuchElementException:
 		pass
 

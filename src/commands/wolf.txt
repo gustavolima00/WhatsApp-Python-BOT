@@ -1,0 +1,9 @@
+Aqui estão os comandos do werewolf MIAU
+ 
+ 
+*/helpwolf* _Saiba mais sobre o jogo_
+*/start* _Inicia um jogo Apenas em grupo_
+*/rolelist* _Mostra roles do jogo_
+*/join* _Entra em jogo iniciado_
+*/flee* _Sai de um jogo_
+
