@@ -3,6 +3,8 @@ from selenium.webdriver.common.keys import Keys
 import time
 from random import randint
 from selenium.webdriver.common.action_chains import ActionChains
+import emoji
+import clipboard
 
 CHAT_NORMAL = '._2wP_Y'
 CHAT_UNREAD = '._2EXPL.CxUIE'
@@ -22,10 +24,8 @@ class Chat:
 
 def send_message(driver, text):
 	msg_box = driver.find_element_by_class_name(MSG_BOX)
-	phrases = text.split('\n')
-	for phrase in phrases:
-		msg_box.send_keys(phrase)
-		msg_box.send_keys(Keys.SHIFT + Keys.ENTER)
+	clipboard.copy(text)
+	msg_box.send_keys(Keys.CONTROL, 'v')
 	send_button = driver.find_element_by_class_name(SEND_BUTTON)
 	send_button.click()
 

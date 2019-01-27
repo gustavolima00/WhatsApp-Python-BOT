@@ -4,7 +4,9 @@ from datetime import datetime
 import time
 from selenium.common.exceptions import NoSuchElementException
 
-driver = webdriver.Chrome()
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--no-sandbox')
+driver = webdriver.Chrome('chromedriver', service_args=["--verbose", "--log-path=/tmp/CHROMIUM_LOG"], options=chrome_options)
 driver.get('https://web.whatsapp.com/')
 input('Insira o QR e aperte enter')
 
