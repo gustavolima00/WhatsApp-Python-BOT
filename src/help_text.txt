@@ -1,0 +1,13 @@
+| Oi eu sou o Alfredo BOT :)              
+|Vou te apresentar meus comandos          
+|                                         
+|                                         
+| /joke                                   
+| /startwerewolf                          
+| /helpwerewolf                           
+|                                         
+|                                         
+| Eu demoro cerca de 1 segundo para ler   
+| mensagens caso eu não te dê atenção é   
+| porque sua mensagem passou despercebida 
+| Não exite em enviar o comando novamente 
