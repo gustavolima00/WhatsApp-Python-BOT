@@ -31,7 +31,7 @@ def send_message(driver, text):
 
 def run_command(driver, command):
 	try:
-		arq_path = 'commands/' + command + '.txt'
+		arq_path = 'commands/' + command.lower() + '.txt'
 		arq = open(arq_path, 'r')
 		text = arq.read()
 		phrases = text.split('#')
@@ -67,10 +67,10 @@ def get_chats(driver):
 		print('tam', tam)
 		print('unread_chat', unread_chat)
 		name =  unread_chat[0]
-		if(tam == 4):
+		if(tam == 4 and unread_chat[3].isdigit()):
 			chat_type = 'normal'
 			num = unread_chat[3]
-		elif(tam == 5):
+		elif(tam == 5 and unread_chat[4].isdigit()):
 			chat_type = 'group'
 			num = unread_chat[4]
 		else:
