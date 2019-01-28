@@ -64,11 +64,14 @@ while True:
                             run_command(driver, message)
                         except FileNotFoundError:
                             if(message.lower() == 'start_game'):
-                                time_now = datetime.now()
-                                end_time = time_now + timedelta(minutes=1)
-                                group_name = chat.name
-                                is_running = True
-                                send_text(driver, 'start_game')
+                                if(user in contacts):
+                                    time_now = datetime.now()
+                                    end_time = time_now + timedelta(minutes=1)
+                                    group_name = chat.name
+                                    is_running = True
+                                    send_text(driver, 'start_game', contacts[user])
+                                else:
+                                    send_text(driver, 'unknown_user', user)
                             else:
                                 pass
             else:
