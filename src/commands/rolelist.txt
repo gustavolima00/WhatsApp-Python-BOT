@@ -33,4 +33,3 @@ aboutWolfMan - O Homem-Lobo 👱🌚
 aboutLycan - O Lycan 🐺🌝
 aboutPacifist - Pacifista  ☮️
 aboutWiseElder - Lobo Sensato 📚
-aboutThief - the Ladrão 😈
