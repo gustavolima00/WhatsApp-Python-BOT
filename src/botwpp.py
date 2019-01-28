@@ -15,7 +15,7 @@ SEARCH_BOX = '_2MSJr'
 SEARCH_CLOSE = 'C28xL'
 MSG_BOX = '_1Plpp'
 SEND_BUTTON = '_35EW6'
-
+CHAT_TITLE = '_2zCDG'
 class Chat:
 	def __init__(self, chat_type, name, qnt_messages):
 		self.name = name
@@ -41,9 +41,8 @@ def run_command(driver, command):
 		message = phrases[random_num]
 		send_message(driver, message)
 	except FileNotFoundError:
-		send_message(driver, 'Comando não encontrado')
+		print('Comando não encontrado')
 
-	
 
 def find_user(driver, username):
 	search_box = driver.find_element_by_class_name(SEARCH_BOX)

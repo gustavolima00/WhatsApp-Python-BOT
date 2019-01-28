@@ -17,7 +17,7 @@ Quando os Lobisomens atacarem...
 - Um Infiel 😾, ao invés de morrer, ele se juntará aos Lobisomens!
  
  
-A notícia boa é que, se houver um Lobisomem Alfa ⚡️ (/aboutAlphaWolf) na sua alcateia, vocês tem a chance de transformar vítimas em Lobisomens. E, se um Filhote de Lobisomem 🐶 (/aboutWolfCub) morrer, vocês poderão atacar duas vezes na mesma noite!
+A notícia boa é que, se houver um Lobisomem Alfa ⚡️ (aboutAlphaWolf) na sua alcateia, vocês tem a chance de transformar vítimas em Lobisomens. E, se um Filhote de Lobisomem 🐶 (aboutWolfCub) morrer, vocês poderão atacar duas vezes na mesma noite!
  
  
 Os Lobisomens vencem quando forem pelo menos metade dos habitantes da aldeia, com exceções. Se só sobrar um Lobisomem e uma Sentinela 🎯, o Lobisomem tem 70% de chance de ganhar. Se só sobrar um Lobisomem e um Serial Killer 🔪, o Lobisomem perde. Se mais de um Lobisomem sobrar, mas um Vigilante 🔫 estiver vivo e com munição, o jogo ainda não vai acabar.
