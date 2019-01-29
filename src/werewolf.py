@@ -25,30 +25,35 @@ def get_contacts():
                 pass
     except FileNotFoundError:
         pass
-    print(contacts)
     return contacts
 
-def start_game(driver, players):
-    arq = open('game_messages/game_start.txt', 'r')
-    text = arq.read()
-    arq.close()
-    send_message(driver, text)
-    vg_roles = ['cursed', 'detective', 'drunk']
-    random.shuffle(vg_roles)
-    ww_roles = []
-    random.shuffle(ww_roles)
-    for player in players:
-        role = vg_roles.pop()
-        arq_path = 'roles_messages/' + role + '.txt'
-        arq = open(arq_path, 'r')
+def start_game(driver, group_name, players):
+    try:
+        arq = open('game_messages/game_start.txt', 'r')
         text = arq.read()
         arq.close()
-        players[player]=role
-        find_user(driver, player)
+        find_user(driver, group_name)
         send_message(driver, text)
+        vg_roles = ['cursed', 'detective', 'drunk']
+        random.shuffle(vg_roles)
+        ww_roles = []
+        random.shuffle(ww_roles)
+        for player in players:
+            role = vg_roles.pop()
+            arq_path = 'roles_messages/' + role + '.txt'
+            arq = open(arq_path, 'r')
+            text = arq.read()
+            arq.close()
+            players[player]=role
+            find_user(driver, player)
+            send_message(driver, text)
+        return True
+    except:
+        return False
+    
 
 def show_players(driver, players, contacts):
-    message = 'Jogadores:\n'
+    message = '*Jogadores*:\n'
     for number in list(players):
         if(players[number] == None):
             message += emoji.emojize(':bust_in_silhouette:')
