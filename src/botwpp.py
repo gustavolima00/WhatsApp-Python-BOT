@@ -50,18 +50,6 @@ def send_message(driver, text):
     send_button.click()
 
 
-def run_command(driver, command):
-    arq_path = 'commands/' + command.lower() + '.txt'
-    arq = open(arq_path, 'r')
-    text = arq.read()
-    phrases = text.split('#')
-    num = len(phrases)
-    arq.close()
-    random_num = randint(0, num-1)
-    message = phrases[random_num]
-    send_message(driver, message)
-
-
 def send_text(driver, texts, *args):
     try:
         arq_path = 'texts/' + texts.lower() + '.txt'
@@ -88,7 +76,6 @@ def send_text(driver, texts, *args):
 def find_user(driver, username):
     search_box = driver.find_element_by_class_name(SEARCH_BOX)
     search_box.send_keys(username)
-    time.sleep(1)
     try:
         user = driver.find_element_by_xpath(
             '//span[@title = "{}"]'.format(username))
@@ -97,6 +84,7 @@ def find_user(driver, username):
         search_close.click()
     except:
         print('Falha ao entrar na conversa')
+    time.sleep(0.01)
 
 # Abre conversas não lidas
 

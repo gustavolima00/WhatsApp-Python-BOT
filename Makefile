@@ -1,5 +1,5 @@
-wolf:
-	cd src && python3 werewolf.py
+default:
+	cd src && python3 main.py
 build:
 	apt-get install xsel
 	apt-get install xclip
