@@ -32,6 +32,10 @@ OFF = 0
 PREPARING = 1
 RUNNING = 2
 
+NIGHT = 1
+DAY = 2
+VOTING = 3
+
 class Game:
     def __init__(self, players):
         self.players = players
@@ -39,6 +43,7 @@ class Game:
         self.group_name = ''
         self.time_now = datetime.now()
         self.next_time = None
+        self.game_time = None
 
     def prepare_game(self, driver, group_name, player):
         if(self.status != OFF):
@@ -46,7 +51,7 @@ class Game:
         self.status = PREPARING
         self.next_time = self.time_now + timedelta(minutes=5)
         self.group_name = group_name
-        send_text(driver, 'start_game', player.name)
+        send_text(driver, group_name, 'start_game', player.name)
         self.players.append(player)
 
     #Toma as decisões no jogo
@@ -58,9 +63,7 @@ class Game:
             self.start_game(driver)       
             return
         if(self.status == RUNNING and self.time_now > self.next_time):
-            find_user(driver, self.group_name)
-            send_message(driver, 'O jogo acabou')
-            self.end_game()
+            self.end_game(driver)
             return
 
     def start_game(self, driver):
@@ -69,8 +72,7 @@ class Game:
         arq = open('game_messages/game_start.txt', 'r')
         text = arq.read()
         arq.close()
-        find_user(driver, self.group_name)
-        send_message(driver, text)
+        send_message(driver, self.group_name, text)
 
         vg_roles = ['cursed', 'detective', 'drunk']
         random.shuffle(vg_roles)
@@ -84,19 +86,21 @@ class Game:
             text = arq.read()
             arq.close()
             player.set_role(role)
-            find_user(driver, player.number)
-            send_message(driver, text)
+            send_message(driver, player.number, text)
 
         self.status = RUNNING
+        self.game_time = NIGHT
         self.next_time = self.time_now + timedelta(seconds=90)
         self.show_players(driver)
 
-    def end_game(self):
+    def end_game(self, driver):
         self.status = OFF
         self.group_name = ''
         self.time_now = datetime.now()
         self.next_time = None
+        self.game_time = None
         self.players.clear()
+        send_message(driver, self.group_name, 'O jogo foi finalizado')
 
     def show_players(self, driver):
         if(self.status == OFF):
@@ -116,8 +120,7 @@ class Game:
                     message += emoji.emojize(':slightly_smiling_face:') 
 
                 message += player.name+'\n'
-        find_user(driver, self.group_name)
-        send_message(driver, message)
+        send_message(driver, self.group_name, message)
 
     def add_player(self, driver, new_player):
         if(self.status != PREPARING):
@@ -126,19 +129,23 @@ class Game:
             if(player.number == new_player.number):
                 return
         self.players.append(new_player)
-        find_user(driver, self.group_name)
-        send_text(driver, 'join', new_player.name)
+        send_text(driver, self.group_name, 'join', new_player.name)
     
-    def remove_player(self, driver, remove_player):
-        if(self.status != PREPARING or self.status != RUNNING):
+    def remove_player(self, driver, r_player):
+        if(self.status != PREPARING and self.status != RUNNING):
             return
         
         for player in self.players:
-            if(player.number == remove_player.number):
-                find_user(driver, self.group_name)
-                send_text(driver, 'flee', player.name)
-                players.remove(player)
+            if(player.number == r_player.number):
+                send_text(driver, self.group_name, 'flee', player.name)
+                self.players.remove(player)
                 return
+    def run_nigth(self, driver):
+        for player in self.players:
+            if(player.role == 'wolf'):
+                pass
+                
+
 
 
 def save_contacts(contacts):
@@ -177,7 +184,6 @@ def run_command(driver, command, user):
         arq.close()
         random_num = randint(0, num-1)
         message = phrases[random_num]
-        find_user(driver, user)
-        send_message(driver, message)
+        send_message(driver, user, message)
     except FileNotFoundError:
         pass

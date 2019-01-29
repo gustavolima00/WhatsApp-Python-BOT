@@ -16,9 +16,15 @@ print('contacts', contacts)
 players = []
 game = Game(players)
 
+input('Insira o QR code e aperte enter')
+find_user(driver, 'SLEEP')
+time.sleep(3)
+
 while True:
-    game.game_check(driver)
-            
+    if('SLEEP' != get_header(driver)):    
+        find_user(driver, 'SLEEP')
+        time.sleep(3)
+    game.game_check(driver)         
     try:
         unread_chats = get_unread_chats(driver)
         for contact_name in unread_chats:
@@ -29,29 +35,29 @@ while True:
             #Se o título da conversa começa com + é uma pessoa
             if(title[0] == '+'): 
                 if(not title in messages):
-                    send_text(driver, 'bug_message')
+                    send_text(driver, title, 'bug_message')
                     continue
                 for message in messages[title][::-1]:
                     run_command(driver, message, title)
-                    if(message.lower() == 'change_name'):
+                    if(message.lower() == 'name'):
                         contacts[title] = 'unamed'
-                        send_text(driver, 'welcome')
+                        send_text(driver, title, 'welcome')
                     else:
                         if(title in contacts and contacts[title] != 'unamed'):
-                            send_text(driver, 'hello', contacts[title])
+                            send_text(driver, title, 'hello', contacts[title])
                         elif(title in contacts and contacts[title] == 'unamed'):
                             contacts[title] = message
-                            send_text(driver, 'change_name', contacts[title])
+                            send_text(driver, title, 'change_name', contacts[title])
                             save_contacts(contacts)
                         else:
                             contacts[title] = 'unamed'
-                            send_text(driver, 'welcome')
+                            send_text(driver, title, 'welcome')
             # Comando para mensagens em grupo
             else:
                 for user in messages:
                     if(user == get_header(driver)):
-                        send_text(driver, 'bug_message')
-                        break
+                        send_text(driver, title, 'bug_message')
+                        continue
                     for message in messages[user][::-1]:
                         message = message.lower()
                         run_command(driver, message, user)
@@ -63,22 +69,19 @@ while True:
                                 player = Player(user, contacts[user])
                                 game.add_player(driver, player)
             
-                            elif(message == 'force_start'):
+                            elif(message == 'force'):
                                 game.start_game(driver)
 
-                            elif(message == 'start_game'):
+                            elif(message == 'start'):
                                 player = Player(user, contacts[user])
                                 game.prepare_game(driver, title, player)
                             elif(message == 'flee'):
                                 player = Player(user, contacts[user])
                                 game.remove_player(driver, player)
+                            elif(message == 'end'):
+                                game.end_game(driver)
 
                         else:
-                            send_text(driver, 'unknown_user', user)
-
-            if('SLEEP' != get_header(driver)):    
-                find_user(driver, 'SLEEP')
-                time.sleep(3)
+                            send_text(driver, title, 'unknown_user', user)
     except NoSuchElementException:
-        find_user(driver, 'SLEEP')
-        time.sleep(3)
+        pass

@@ -42,7 +42,11 @@ def get_header(driver):
 		title = ''
 	return title
 
-def send_message(driver, text):
+def send_message(driver, username, text):
+    if(username != get_header(driver)):
+        if(not find_user(driver, username)):
+            print('Falha ao enviar mensagem')
+            return
     msg_box = driver.find_element_by_class_name(MSG_BOX)
     clipboard.copy(text)
     msg_box.send_keys(Keys.CONTROL, 'v')
@@ -50,7 +54,7 @@ def send_message(driver, text):
     send_button.click()
 
 
-def send_text(driver, texts, *args):
+def send_text(driver, username ,texts, *args):
     try:
         arq_path = 'texts/' + texts.lower() + '.txt'
         arq = open(arq_path, 'r')
@@ -58,7 +62,7 @@ def send_text(driver, texts, *args):
         phrases = text.split('%')
         num = len(phrases)-1
         if(num == 0):
-            send_message(driver, text)
+            send_message(driver, username, text)
             return
         if(len(args) != num):
             print('erro send_text')
@@ -68,27 +72,36 @@ def send_text(driver, texts, *args):
         for x in range(0, num):
             message += phrases[x]+args[x]
         message += phrases[x + 1]
-        send_message(driver, message)
+        send_message(driver, username, message)
     except FileNotFoundError:
         print('Texto não encontrado')
 
 
 def find_user(driver, username):
-    search_box = driver.find_element_by_class_name(SEARCH_BOX)
-    search_box.send_keys(username)
+    result = True
+    try:
+        search_box = driver.find_element_by_class_name(SEARCH_BOX)
+        search_box.send_keys(username)
+    except:
+        print('Falha ao procurar conversa')
+        result = False
+    time.sleep(0.02)
     try:
         user = driver.find_element_by_xpath(
             '//span[@title = "{}"]'.format(username))
         user.click()
-        search_close = driver.find_element_by_class_name(SEARCH_CLOSE)
-        search_close.click()
     except:
         print('Falha ao entrar na conversa')
-    time.sleep(0.01)
-
+        result = False  
+    try:
+        search_close = driver.find_element_by_class_name(SEARCH_CLOSE)
+        search_close.click()
+        time.sleep(0.01)
+    except:
+        print('Falha ao clicar no botao de voltar')
+        result = False  
+    return result
 # Abre conversas não lidas
-
-
 def get_unread_chats(driver):
     contents = driver.find_elements_by_css_selector(CHAT + UNREAD)
     chats = []

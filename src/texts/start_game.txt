@@ -6,6 +6,6 @@ Aqui estão os comandos:
 *join* _Para participar_
 *flee* _Para sair do jogo_
 *players* _Para ver a lista de participantes_
-*force_start* _Para iniciar o jogo agora_
+*force* _Para iniciar o jogo agora_
 
 🌖🌗🌘🌑🐺🐺🌑🌒🌓🌔
