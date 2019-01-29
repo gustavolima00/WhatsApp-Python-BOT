@@ -22,15 +22,21 @@ while True:
         time_now = datetime.now()
         if(time_now > end_time):
             find_user(driver, group_name)
-            send_text(driver, 'time_over')
-            is_game_running = False
-            group_name = ''
             end_time = None
+            if(True):
+                start_game(driver, players)
+            else:
+                send_text(driver, 'time_over')
+                is_game_running = False
+                group_name = ''
+            find_user(driver, group_name)
+            show_players(driver, players, contacts)
+            
     try:
         chats = get_chats(driver)
         for chat in chats:
             if(chat.name != get_header(driver)):
-                find_user(driver, chat.name)
+                find_user(driver, chat.name)    
                 time.sleep(1)
             messages = get_messages(driver, chat.qnt_messages)
             print('Numero/Titulo do grupo:', chat.name)
@@ -76,11 +82,17 @@ while True:
                                         players[user]=None
                                         send_text(driver, 'join', contacts[user])
                                     elif(message == 'players'):
-                                        message = 'Jogadores:\n'
-                                        for number in list(players):
-                                            message += emoji.emojize(':bust_in_silhouette:'+ contacts[number]+'\n')
-                                        send_message(driver, message)
+                                        show_players(driver, players, contacts)
                                     elif(message == 'force_start'):
+                                        find_user(driver, group_name)
+                                        start_game(driver, players)
+                                        find_user(driver, group_name)
+                                        show_players(driver, players, contacts)
+                                        end_time = None
+                                    elif(message == 'end'):
+                                        is_game_running = False
+                                        group_name = ''
+                                        end_time = None
                                         pass
                                 else:
                                     if(message == 'start_game'):

@@ -1,3 +1,6 @@
+from botwpp import *
+import random
+import emoji
 
 def save_contacts(contacts):
     file = open('contacts.txt','w') 
@@ -20,8 +23,38 @@ def get_contacts():
                 contacts[content[0]]=content[1]
             else:
                 pass
-
     except FileNotFoundError:
         pass
     print(contacts)
     return contacts
+
+def start_game(driver, players):
+    arq = open('game_messages/game_start.txt', 'r')
+    text = arq.read()
+    arq.close()
+    send_message(driver, text)
+    vg_roles = ['cursed', 'detective', 'drunk']
+    random.shuffle(vg_roles)
+    ww_roles = []
+    random.shuffle(ww_roles)
+    for player in players:
+        role = vg_roles.pop()
+        arq_path = 'roles_messages/' + role + '.txt'
+        arq = open(arq_path, 'r')
+        text = arq.read()
+        arq.close()
+        players[player]=role
+        find_user(driver, player)
+        send_message(driver, text)
+
+def show_players(driver, players, contacts):
+    message = 'Jogadores:\n'
+    for number in list(players):
+        if(players[number] == None):
+            message += emoji.emojize(':bust_in_silhouette:')
+        elif(players[number] == 'dead'):
+            message += emoji.emojize(':skull:')
+        else:
+            message += emoji.emojize(':slightly_smiling_face:')    
+        message += contacts[number]+'\n'
+    send_message(driver, message)
