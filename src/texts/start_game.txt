@@ -1,0 +1,14 @@
+🌖🌗🌘🌑🐺🐺🌑🌒🌓🌔
+
+*%* iniciou um jogo 
+Aqui estão os comandos:
+
+*entrar* _Para participar_
+*sair* _Para sair do jogo_
+*jogadores* _Para ver a lista de participantes_
+*force* _Para iniciar o jogo agora_
+*tempo* _Para ver o tempo restante para entrar_
+*extend* _Para extender o tempo restante para 5 minutos_
+
+
+🌖🌗🌘🌑🐺🐺🌑🌒🌓🌔

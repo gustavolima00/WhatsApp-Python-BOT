@@ -1,0 +1,7 @@
+O objetivo de um Doppelgänger 🎭 é se transformar em alguém. No começo do jogo, um Doppelgänger pode escolher uma pessoa para ser seu exemplo. Quando ela morrer, o Doppelgänger se transforma no papel dela!
+
+Normalmente, um Doppelgänger se transforma no papel original de uma pessoa, ou seja, a infecção de um Lobisomem Alfa ⚡️ ou a conversão para a Seita 👥 não influenciam na hora de um Doppelgänger se transformar. A exceção é que, se o papel original for Infiel 😾, Traíra 🖕, ou Criança Rebelde 👶, e a pessoa tiver se transformado em Lobisomem 🐺 (mesmo se foi pela mordida de um Alfa), o Doppelgänger também se transformará em Lobisomem. Além disso, se o papel original da pessoa for Aprendiz de Vidente 🙇, e ela não tiver sido transformada em Lobisomem, um Doppelgänger pega o papel que ela tinha na hora da morte (ou seja, Aprendiz de Vidente, Vidente 👳, ou Integrante da Seita 👤).
+
+Chances de conversão para a Seita 👥: 0% (se ainda não tiver se transformado)
+
+Time: Neutro. Um Doppelgänger ganha se tiver se transformado, e perde se morreu sem se transformar.

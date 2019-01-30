@@ -1,0 +1,9 @@
+Uma Sentinela passa a noite de vigília, e não vai ser pega desprevenida por qualquer um. Além de poder se defender de Lobisomens e Cultistas, uma Sentinela pode vingar a própria morte atirando em alguém. Quando morrer por qualquer motivo que não seja o ataque de um Lobisomem, uma Sentinela tem a opção de escolher uma pessoa dentre todos os jogadores vivos para matar, e assim levar junto consigo.
+
+Quando uma Sentinela for atacada por um único Lobisomem, tem 30% de chance de matar o Lobisomem e, assim, sobreviver. Já quando for atacada por mais de um Lobisomem, a Sentinela com certeza morrerá, mas terá a chance de levar um dos Lobisomens consigo. Se forem dois Lobisomens, a chance é de 50%; se forem três, 70%; se forem 4, 90%; e, se forem mais do que quatro, um dos Lobisomens com certeza morrerá. Se a Sentinela morrer por causa do ataque de um Lobisomem, ela não poderá escolher uma pessoa para matar. Ao invés disso, o bot escolhe um dos Lobisomens para morrer.
+
+Se um Integrante da Seita tentar converter uma Sentinela, tem uma chance de 25% dela estar de mau humor e matar o Integrante da Seita.
+
+Chances de conversão para a Seita 👥: 50%
+
+Time: Aldeia

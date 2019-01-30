@@ -1,4 +1,4 @@
-Um Confidente 👁 sabe quem é (e se há) Vidente 👳 (/aboutSeer) no jogo, recebendo uma mensagem no começo do jogo e outra no caso de um Aprendiz de Vidente 🙇 (/aboutAppSeer) virar Vidente. Confidentes não sabem quem é Trouxa 🃏 (/aboutFool) ou Aprendiz, apenas quem é ou virou Vidente.
+Um Confidente 👁 sabe quem é (e se há) Vidente 👳 (aboutSeer) no jogo, recebendo uma mensagem no começo do jogo e outra no caso de um Aprendiz de Vidente 🙇 (aboutAppSeer) virar Vidente. Confidentes não sabem quem é Trouxa 🃏 (aboutFool) ou Aprendiz, apenas quem é ou virou Vidente.
 
 Confidentes têm um papel crucial na Aldeia, o de falar com um Vidente para assegurá-lo de que ele não é Trouxa. Um bom Confidente também ouve todas as visões de um Vidente, e as compartilha para a Aldeia como porta-voz do Vidente. Assim, a Aldeia fica sabendo dos papéis das pessoas sem colocar a vida do Vidente em risco.
 

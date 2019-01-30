@@ -1,5 +1,5 @@
 default:
-	cd src && python3 code.py
+	cd src && python3 main.py
 build:
 	apt-get install xsel
 	apt-get install xclip

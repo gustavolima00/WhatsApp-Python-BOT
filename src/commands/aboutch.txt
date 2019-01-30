@@ -1,0 +1,7 @@
+Sempre que um jogo tiver Seita 👥, também terá um Agente da Inquisição 💂. Seu objetivo é matar todos os Integrantes da Seita 👤, e, para isso, o Agente visita uma pessoa por noite para inquirir. Se a pessoa for Integrante da Seita, ela morre. Se a pessoa for Serial Killer 🔪, o Agente da Inquisição morre. Surpreendentemente, se a pessoa for Lobisomem 🐺, ninguém morre. Já se a Seita tentar converter um Agente da Inquisição, o Integrante mais novo morre.
+
+Um Agente da Inquisição visita pessoas depois dos Lobisomens e Serial Killers visitarem, mas antes da Seita converter alguém. Isso significa que, se um Agente da Inquisição visitar uma pessoa no mesmo dia que a Seita tentar convertê-la, a pessoa não morre, mas pode ter sido convertida.
+
+Chances de conversão para a Seita 👥: 0%, e o Integrante mais novo morre.
+
+Time: Aldeia

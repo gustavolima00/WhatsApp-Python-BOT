@@ -1,5 +1,5 @@
 Aqui estão os comandos do werewolf 🐺🌚
  
-
-*/helpwolf* _Saiba mais sobre o jogo_ 🆘
-*/rolelist* _Mostra roles do jogo_ 👀
+*iniciar* _Começa o jogo_ 🐺
+*helpWolf* _Saiba mais sobre o jogo_ 🆘
+*roleList* _Mostra roles do jogo_ 👀
