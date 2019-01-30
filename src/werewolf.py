@@ -156,11 +156,14 @@ class Game:
 
     def end_game(self, driver):
         send_message(driver, self.group_name, 'O jogo foi finalizado')
+        self.num_players = 0
+        self.num_ww = 0
+        self.num_vg = 0
         self.status = OFF
         self.group_name = ''
-        self.time_now = datetime.now()
-        self.next_time = None
-        self.game_time = None
+        self.game_time = 0
+        self.options.clear()
+        self.actions.clear()
         self.players.clear()
 
     def show_players(self, driver):
@@ -202,29 +205,10 @@ class Game:
         if(chosen_player == None):
             return
         
-        # Ações noturnas
-        if(self.game_time == NIGHT):
-            if(player.role_type == WW):
-                if(chosen_player.role_type == VG):
-                    if(False):
-                        pass
-                    else:
-                        send_message(driver, player.number, 'Opção aceita')
-                        send_text(driver, player.number, 'option_accepted', chosen_player.name)
-                        self.actions[player]=chosen_player
-                        del self.options[player.number]
-                elif(chosen_player.role_type == WW):
-                    if(False):
-                        pass
-                    else:
-                        pass
-
-        # Ações diurnas
-        elif(self.game_time == DAY):
-            pass
-        # Votação
-        elif(self.game_time == VOTING):
-            pass
+        send_message(driver, player.number, 'Opção aceita')
+        send_text(driver, player.number, 'option_accepted', chosen_player.name)
+        self.actions[player]=chosen_player
+        del self.options[player.number]
 
     def remove_player(self, driver, r_player):
         if(self.status != PREPARING and self.status != RUNNING):
@@ -250,16 +234,19 @@ class Game:
                 pass
             else:
                 pass
-        send_text(driver, self.group_name, 'nigth')
+        send_text(driver, self.group_name, 'night')
         self.show_players(driver)
+
     def run_day(self, driver):
         self.options.clear()
         self.next_time = self.time_now + timedelta(seconds=90)
         ww_kill=[]
+        print('self.actions', self.actions)
         for player in self.actions:
             chosen_player = self.actions[player]
             if(player.role == 'wolf'):
                 ww_kill.append(chosen_player)
+        print('ww_kill', ww_kill)
         if(len(ww_kill)==0):
             send_text(driver, self.group_name, 'no_attack')
         else:

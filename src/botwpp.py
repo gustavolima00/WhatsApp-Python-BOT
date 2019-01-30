@@ -51,6 +51,7 @@ def send_message(driver, username, text):
         msg_box = driver.find_element_by_class_name(MSG_BOX)
         clipboard.copy(text)
         msg_box.send_keys(Keys.CONTROL, 'v')
+        time.sleep(0.1)
         send_button = driver.find_element_by_class_name(SEND_BUTTON)
         send_button.click()
         return True
