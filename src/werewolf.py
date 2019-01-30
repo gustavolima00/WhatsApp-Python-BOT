@@ -56,6 +56,14 @@ class Player:
         self.especial_power = 0
         self.actions = 0
 
+    def get_role(self):
+        if(self.role == 'villager'):
+            return emoji.emojize('Aldeão :blond-haired_person:')
+        elif(self.role == 'wolf'):
+            return emoji.emojize('Lobisomem :wolf_face:')
+        else:
+            return ''
+
 class Game:
     def __init__(self, players):
         self.players = players
@@ -100,6 +108,24 @@ class Game:
                       
             return
         if(self.status == RUNNING):
+            num_ww = 0
+            num_vg = 0
+            for player in self.players:
+                if(player.status == ALIVE):
+                    if(player.role_type ==  VG):
+                        num_vg+=1
+                    elif(player.role_type ==  WW):
+                        num_ww+=1
+            if(num_ww == 0):
+                send_text(driver, self.group_name, 'village_wins')
+                self.show_roles(driver)
+                self.end_game(driver)
+
+            elif(num_vg<=num_ww):
+                send_text(driver, self.group_name, 'wolves_win')
+                self.show_roles(driver)
+                self.end_game(driver)
+
             if(self.game_time == NIGHT):
                 if(self.time_now>self.next_time):
                     self.run_day(driver)
@@ -214,6 +240,13 @@ class Game:
                 message += player.name+'\n'
         send_message(driver, self.group_name, message)
 
+    def show_roles(self, driver):
+        message = 'Jogadores restantes e papeis:\n'
+        for player in self.players:
+            if(player.status == ALIVE):
+                message += '*' + player.name + '*: ' + player.get_role() + '\n'
+        send_message(driver, self.group_name, message)
+
     def add_player(self, driver, new_player):
         if(self.status != PREPARING):
             return
@@ -272,6 +305,7 @@ class Game:
                 else:
                     pass
         send_text(driver, self.group_name, 'night')
+        self.game_time = NIGHT
         self.show_players(driver)
 
     def run_day(self, driver):
@@ -336,10 +370,12 @@ class Game:
         elif(draw):
             send_text(driver, self.group_name, 'lynch_tie')
         else:
-            send_text(driver, self.group_name, 'lynch_kill', lynch_player.name)
-            lynch_player.kill()
-
-        
+            if(False):
+                pass
+            else:
+                send_text(driver, self.group_name, 'lynch_kill', lynch_player.name, lynch_player.name, lynch_player.get_role())
+                lynch_player.kill()
+    
     def is_alive(player):
         return player.status==ALIVE
 
@@ -403,3 +439,4 @@ def send_action(driver, action, user, other_players):
         message+=line
         i+=1
     send_message(driver, user, message)
+

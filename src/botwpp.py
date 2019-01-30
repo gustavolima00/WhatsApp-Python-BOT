@@ -89,19 +89,19 @@ def find_user(driver, username):
     try:
         search_box = driver.find_element_by_class_name(SEARCH_BOX)
         search_box.send_keys(username)
+        time.sleep(0.3)
     except:
         print('Falha ao procurar conversa')
         result = False
     try:
-        time.sleep(0.1)
         user = driver.find_element_by_xpath(
             '//span[@title = "{}"]'.format(username))
         user.click()
+        time.sleep(0.1)
     except:
         print('Falha ao entrar na conversa')
         result = False  
     try:
-        time.sleep(0.1)
         search_close = driver.find_element_by_class_name(SEARCH_CLOSE)
         search_close.click()
     except:
