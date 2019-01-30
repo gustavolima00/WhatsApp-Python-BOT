@@ -38,13 +38,20 @@ while True:
                     send_text(driver, title, 'bug_message')
                     continue
                 for message in messages[title][::-1]:
+                    message = message.lower()
                     run_command(driver, message, title)
-                    if(message.lower() == 'name'):
+                    if(title in game.options):
+                        for player in game.players:
+                            if(player.number == title):
+                                game.run_action(driver, player, message)
+                                break
+                    if(message == 'name'):
                         contacts[title] = 'unamed'
                         send_text(driver, title, 'welcome')
                     else:
                         if(title in contacts and contacts[title] != 'unamed'):
-                            send_text(driver, title, 'hello', contacts[title])
+                            if('oi' in message):
+                                send_text(driver, title, 'hello', contacts[title])
                         elif(title in contacts and contacts[title] == 'unamed'):
                             contacts[title] = message
                             send_text(driver, title, 'change_name', contacts[title])
@@ -62,20 +69,20 @@ while True:
                         message = message.lower()
                         run_command(driver, message, user)
                         if(user in contacts):
-                            if(message == 'players'):
+                            if(message == 'jogadores'):
                                 game.show_players(driver)
 
-                            elif(message == 'join'):
+                            elif(message == 'entrar'):
                                 player = Player(user, contacts[user])
                                 game.add_player(driver, player)
             
                             elif(message == 'force'):
                                 game.start_game(driver)
 
-                            elif(message == 'start'):
+                            elif(message == 'iniciar'):
                                 player = Player(user, contacts[user])
                                 game.prepare_game(driver, title, player)
-                            elif(message == 'flee'):
+                            elif(message == 'sair'):
                                 player = Player(user, contacts[user])
                                 game.remove_player(driver, player)
                             elif(message == 'end'):

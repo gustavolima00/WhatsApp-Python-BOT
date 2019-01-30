@@ -3,9 +3,9 @@
 *%* iniciou um jogo 
 Aqui estão os comandos:
 
-*join* _Para participar_
-*flee* _Para sair do jogo_
-*players* _Para ver a lista de participantes_
+*entrar* _Para participar_
+*sair* _Para sair do jogo_
+*jogadores* _Para ver a lista de participantes_
 *force* _Para iniciar o jogo agora_
 
 🌖🌗🌘🌑🐺🐺🌑🌒🌓🌔

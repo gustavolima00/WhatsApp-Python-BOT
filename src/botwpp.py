@@ -35,23 +35,28 @@ TAIL = '.tail'
 # MESSAGE_OUT_TAIL = '._3_7SH._3DFk6.message-out.tail'
 
 def get_header(driver):
-	header = driver.find_elements_by_css_selector(CHAT_TITLE)
-	if(len(header)!=0):
-		title = header[0].text
-	else:
-		title = ''
-	return title
+    try:
+        header = driver.find_elements_by_css_selector(CHAT_TITLE)
+        title = header[0].text
+    except:
+        title = ''
+    return title
 
 def send_message(driver, username, text):
     if(username != get_header(driver)):
         if(not find_user(driver, username)):
             print('Falha ao enviar mensagem')
-            return
-    msg_box = driver.find_element_by_class_name(MSG_BOX)
-    clipboard.copy(text)
-    msg_box.send_keys(Keys.CONTROL, 'v')
-    send_button = driver.find_element_by_class_name(SEND_BUTTON)
-    send_button.click()
+            return False
+    try:
+        msg_box = driver.find_element_by_class_name(MSG_BOX)
+        clipboard.copy(text)
+        msg_box.send_keys(Keys.CONTROL, 'v')
+        send_button = driver.find_element_by_class_name(SEND_BUTTON)
+        send_button.click()
+        return True
+    except:
+        print('Falha ao enviar mensagem')
+        return False
 
 
 def send_text(driver, username ,texts, *args):
