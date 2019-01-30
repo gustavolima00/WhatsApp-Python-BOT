@@ -35,6 +35,7 @@ class Player:
         self.role_type = None
         self.especial_power = 0
         self.actions = 0
+        self.status = None
 
     def set_role(self, role):
         self.role = role
@@ -63,8 +64,8 @@ class Game:
         self.num_vg = 0
         self.status = OFF
         self.group_name = ''
-        self.time_now = datetime.now() - timedelta(minutes=5)
-        self.next_time = self.time_now
+        self.time_now = datetime.now() 
+        self.next_time = self.time_now- timedelta(minutes=5)
         self.game_time = 0
         self.options = {}
         self.actions = {}
@@ -85,20 +86,48 @@ class Game:
             return
         self.time_now = datetime.now()
         time_remaning = (self.next_time - self.time_now).seconds
-        if(self.status == PREPARING and time_remaning<0):
-            self.start_game(driver)       
+        if(self.status == PREPARING):
+            if(self.time_now>self.next_time):
+                self.start_game(driver)
+            elif(time_remaning == 60):
+                send_text(driver, self.group_name, 'time_remaning', '1', '0')
+            elif(time_remaning == 180):
+                send_text(driver, self.group_name, 'time_remaning', '3', '0')
+            elif(time_remaning == 30):
+                send_text(driver, self.group_name, 'time_remaning', '0', '30')
+            elif(time_remaning == 10):
+                send_text(driver, self.group_name, 'time_remaning', '0', '10')
+                      
             return
         if(self.status == RUNNING):
             if(self.game_time == NIGHT):
-                if(len(self.options)==0 or time_remaning<0):
+                if(self.time_now>self.next_time):
+                    self.run_day(driver)
+                elif(len(self.options)==0):
                     self.run_day(driver)
             elif(self.game_time == DAY):
-                if(time_remaning<0):
+                if(self.time_now>self.next_time):
                     self.run_votation(driver)
             elif(self.game_time == VOTING):
-                if(len(self.options)==0 or time_remaning<0):
+                if(self.time_now>self.next_time):
+                    self.run_lynch(driver)
+                    self.run_nigth(driver)
+                elif(len(self.options)==0):
+                    self.run_lynch(driver)
                     self.run_nigth(driver)
             return
+
+    def show_time(self, driver):
+        time_remaning = (self.next_time - self.time_now).seconds
+        minutes = str(int(time_remaning/60))
+        seconds = str(time_remaning%60)
+        send_text(driver, self.group_name, 'time_remaning', minutes, seconds)
+
+    def extend(self, driver):
+        if(self.status == PREPARING):
+            self.time_now = datetime.now()
+            self.next_time = self.time_now + timedelta(minutes=5)
+            send_text(driver, self.group_name, 'time_remaning', '5', '0')
 
     def start_game(self, driver):
         random.shuffle(self.players)
@@ -209,6 +238,8 @@ class Game:
         send_text(driver, player.number, 'option_accepted', chosen_player.name)
         self.actions[player]=chosen_player
         del self.options[player.number]
+        if(self.game_time == VOTING):
+            send_text(driver, self.group_name, 'player_voted_lynch', player.name, chosen_player.name)
 
     def remove_player(self, driver, r_player):
         if(self.status != PREPARING and self.status != RUNNING):
@@ -220,20 +251,26 @@ class Game:
                 self.players.remove(player)
                 self.num_players = len(self.players)
                 return
-
+    
+    def skip(self):
+        self.time_now = datetime.now() 
+        self.next_time = self.time_now- timedelta(minutes=5)
     def run_nigth(self, driver):
+        self.options.clear()
         self.next_time = self.time_now + timedelta(seconds=90)
         for player in self.players:
-            if(player.role_type == WW):
-                self.options[player.number]=[]
-                for other_player in filter(is_alive, self.players):
-                    if(other_player !=  player):
-                        self.options[player.number].append(other_player)                    
-                send_action(driver, 'kill', player.number, self.options[player.number])
-            elif(player.role_type == VG):
-                pass
-            else:
-                pass
+            if(player.status == ALIVE):
+                if(player.role_type == WW):
+                    self.options[player.number]=[]
+                    for other_player in self.players:
+                        if(other_player.status == ALIVE):
+                            if(other_player !=  player):
+                                self.options[player.number].append(other_player)                    
+                    send_action(driver, 'kill', player.number, self.options[player.number])
+                elif(player.role_type == VG):
+                    pass
+                else:
+                    pass
         send_text(driver, self.group_name, 'night')
         self.show_players(driver)
 
@@ -241,12 +278,10 @@ class Game:
         self.options.clear()
         self.next_time = self.time_now + timedelta(seconds=90)
         ww_kill=[]
-        print('self.actions', self.actions)
         for player in self.actions:
             chosen_player = self.actions[player]
             if(player.role == 'wolf'):
                 ww_kill.append(chosen_player)
-        print('ww_kill', ww_kill)
         if(len(ww_kill)==0):
             send_text(driver, self.group_name, 'no_attack')
         else:
@@ -262,12 +297,51 @@ class Game:
         self.show_players(driver)
    
     def run_votation(self, driver):
+        self.options.clear()
         self.next_time = self.time_now + timedelta(seconds=90)
         self.game_time = VOTING
         send_text(driver, self.group_name, 'votation')
+        for player in self.players:
+            if(player.status == ALIVE):
+                self.options[player.number]=[]
+                for other_player in self.players:
+                    if(other_player.status == ALIVE):
+                        if(other_player != player):
+                            self.options[player.number].append(other_player)                    
+                send_action(driver, 'vote', player.number, self.options[player.number])
 
-def is_alive(player):
-    return player.status==ALIVE
+    def run_lynch(self, driver):
+        self.options.clear()
+        lynch_players = {}
+        max_votes = 0
+        draw = True
+        
+        lynch_player = None
+        for player in self.players:
+            if(player.status == ALIVE):
+                lynch_players[player]=0
+
+        for player in self.actions:
+            chosen_player = self.actions[player]
+            lynch_players[chosen_player]+=1
+            if(lynch_players[chosen_player] > max_votes):
+                max_votes = lynch_players[chosen_player]
+                lynch_player = chosen_player
+                draw = False
+            elif(lynch_players[chosen_player] == max_votes):
+                draw = True
+
+        if(max_votes == 0):
+            send_text(driver, self.group_name, 'no_lynch_votes')
+        elif(draw):
+            send_text(driver, self.group_name, 'lynch_tie')
+        else:
+            send_text(driver, self.group_name, 'lynch_kill', lynch_player.name)
+            lynch_player.kill()
+
+        
+    def is_alive(player):
+        return player.status==ALIVE
 
 def save_contacts(contacts):
     file = open('contacts.txt','w') 
@@ -329,4 +403,3 @@ def send_action(driver, action, user, other_players):
         message+=line
         i+=1
     send_message(driver, user, message)
-        

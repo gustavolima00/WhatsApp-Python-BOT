@@ -43,9 +43,10 @@ def get_header(driver):
     return title
 
 def send_message(driver, username, text):
+    time.sleep(0.1)
     if(username != get_header(driver)):
         if(not find_user(driver, username)):
-            print('Falha ao enviar mensagem')
+            print('Falha achar usuário')
             return False
     try:
         msg_box = driver.find_element_by_class_name(MSG_BOX)
@@ -91,8 +92,8 @@ def find_user(driver, username):
     except:
         print('Falha ao procurar conversa')
         result = False
-    time.sleep(0.02)
     try:
+        time.sleep(0.1)
         user = driver.find_element_by_xpath(
             '//span[@title = "{}"]'.format(username))
         user.click()
@@ -100,9 +101,9 @@ def find_user(driver, username):
         print('Falha ao entrar na conversa')
         result = False  
     try:
+        time.sleep(0.1)
         search_close = driver.find_element_by_class_name(SEARCH_CLOSE)
         search_close.click()
-        time.sleep(0.01)
     except:
         print('Falha ao clicar no botao de voltar')
         result = False  
