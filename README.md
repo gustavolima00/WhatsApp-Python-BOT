@@ -8,6 +8,6 @@ O sistema usado foi o linux Ubuntu 18.10, caso não consiga rodar verifique os r
  sudo make build 
  sudo make
   ```
-### Funções pretendidas 
+### Funções 
 - Contar piadas
 - Dirigir um jogo de werewolf
