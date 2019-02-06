@@ -1,5 +1,5 @@
 from selenium import webdriver
-from botwpp import *
+from botwpp_test import *
 from werewolf import *
 from datetime import datetime
 import time
@@ -30,7 +30,7 @@ while True:
         unread_chats = get_unread_chats(driver)
         for contact_name in unread_chats:
             messages = get_messages(driver, contact_name)
-            title = get_header(driver)
+            title = contact_name
             print('Conversation:', title)
             print('Messages:', messages)
             #Se o título da conversa começa com + é uma pessoa
@@ -42,7 +42,7 @@ while True:
                     run_command(driver, message, title)
                     if(title in game.has_action):
                         for player in game.players:
-                            if(player.number == title):
+                            if(player.phone == title):
                                 game.run_action(driver, player, message)
                                 break
                     if(message.lower() == 'name'):

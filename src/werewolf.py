@@ -1,8 +1,4 @@
-from  botwpp import get_header
-from  botwpp import send_message
-from  botwpp import send_text
-from  botwpp import get_unread_chats
-from  botwpp import get_messages
+from  botwpp_test import *
 import random
 from random import randint
 import emoji
@@ -93,6 +89,19 @@ class Game:
         send_text(driver, group_name, 'start_game', player.name)
         self.players.append(player)
     # Checa as açoes e players para finalizar ou avançar
+    def can_end(self, driver):
+        if(self.num_ww == 0):
+            send_text(driver, self.group_name, 'village_wins')
+            self.show_roles(driver)
+            self.end_game(driver)
+            return True
+        elif(self.num_vg<=self.num_ww):
+            send_text(driver, self.group_name, 'wolves_win')
+            self.show_roles(driver)
+            self.end_game(driver)
+            return True
+        else:
+            return False
     def game_check(self, driver):
         if(self.status == OFF):
             return
@@ -115,21 +124,19 @@ class Game:
         # Ações para jogo rolando
         if(self.status == RUNNING):
             #Condiçoes de vitória
-            if(self.num_ww == 0):
-                send_text(driver, self.group_name, 'village_wins')
-                self.show_roles(driver)
-                self.end_game(driver)
-            elif(self.num_vg<=self.num_ww):
-                send_text(driver, self.group_name, 'wolves_win')
-                self.show_roles(driver)
-                self.end_game(driver)
+            if(self.can_end(driver)):
+                return
             #Dia
             if(self.game_time == NIGHT):
                 if(self.time_now>self.next_time):
                     self.wolves_eat(driver)
+                    if(self.can_end(driver)):
+                        return
                     self.run_day(driver)
                 elif(len(self.has_action)==0):
                     self.wolves_eat(driver)
+                    if(self.can_end(driver)):
+                        return
                     self.run_day(driver)
             #Linchamento
             elif(self.game_time == DAY):
@@ -139,9 +146,13 @@ class Game:
             elif(self.game_time == LYNCH):
                 if(self.time_now>self.next_time):
                     self.lynch(driver)
+                    if(self.can_end(driver)):
+                        return
                     self.run_nigth(driver)
                 elif(len(self.has_action)==0):
                     self.lynch(driver)
+                    if(self.can_end(driver)):
+                        return
                     self.run_nigth(driver)
             return
     def start_game(self, driver):
@@ -273,13 +284,19 @@ class Game:
         # Açoes da noite
         elif(self.game_time == NIGHT):
             if(player.role_type == WW):
-                self.voted_players[chosen_player]+=1
+                try:
+                    self.voted_players[chosen_player]+=1
+                except:
+                    self.voted_players[chosen_player]=1
                 for player in self.players:
                     if(player.role_type == WW and player.status == ALIVE and player != chosen_player):
                         send_text(driver, player.phone, 'player_voted_kill', player.name, chosen_player.name)
         # Linchamento 
         elif(self.game_time == LYNCH):
-            self.voted_players[chosen_player]+=1
+            try:
+                self.voted_players[chosen_player]+=1
+            except:
+                self.voted_players[chosen_player]=1
             send_text(driver, self.group_name, 'player_voted_lynch', player.name, chosen_player.name)
     def remove_player(self, driver, r_player):
         if(self.status != PREPARING and self.status != RUNNING):
@@ -400,8 +417,7 @@ class Game:
     def clear_votes(self):
         self.voted_players = {}
         for player in self.players:
-            if(player.status == ALIVE):
-                self.voted_players[player]=0
+            self.voted_players[player]=0
 
 
 def save_contacts(contacts):

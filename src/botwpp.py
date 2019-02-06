@@ -46,7 +46,7 @@ def get_header(driver):
 
 def send_message(driver, username, text):
     time_now = datetime.now() 
-    end_time = time_now + timedelta(seconds=5)
+    end_time = time_now + timedelta(seconds=10)
     # Escrevendo mensagem
     while True:
         time_now = datetime.now() 
@@ -55,8 +55,14 @@ def send_message(driver, username, text):
             return False
         try:
             # Achando usuário
-            if ( not find_user(driver, username)):
-                return False
+            while True:
+                time_now = datetime.now() 
+                if(time_now>end_time):
+                    print("Erro em send_message find_user, tempo limite excedido")
+                    return False
+                if(find_user(driver, username)):
+                    break
+            time.sleep(0.1)
             msg_box = driver.find_element_by_class_name(MSG_BOX)
             clipboard.copy(text)
             msg_box.send_keys(Keys.CONTROL, 'v')
@@ -71,13 +77,10 @@ def send_message(driver, username, text):
             return False
         try:
             # Achando usuário
-            while( not find_user(driver, username)):
-                pass
             send_button = driver.find_element_by_class_name(SEND_BUTTON)
             send_button.click()
-            break
         except:
-            pass    
+            break    
     return True
 
 
