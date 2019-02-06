@@ -52,28 +52,34 @@ def get_unread_chats(driver):
 GROUP = 1
 NORMAL = 2
 def get_messages(driver, chat_name):
-    if(chat_name[0]=='+'):
-        chat_type = NORMAL
-    else:
-        chat_type = GROUP
-    if(chat_type == GROUP):
-        messages_dict={}
-        text2 = input('Mensagens: ex 123:alo/312:hello\n')
-        all_messages = text2.split('/')
-        for message in all_messages:
-            content = message.split(':')
-            user = content[0]
-            text = content[1]
-            if(not user in messages_dict):
-                messages_dict[user]=[]
-            messages_dict[user].append(text)
-        return messages_dict
-    elif(chat_type == NORMAL):
-        text2 = input('Mensagens: ex alo/hello\n')
-        messages = text2.split('/')
-        messages_dict={}
-        messages_dict[chat_name]=messages
-        return messages_dict
-    else:
-        print('Entrada inválida')
-        get_messages(driver, chat_name)
+    try:
+        if(chat_name[0]=='+'):
+            chat_type = NORMAL
+        else:
+            chat_type = GROUP
+        if(chat_type == GROUP):
+            messages_dict={}
+            text2 = input('Mensagens: ex 123:alo/312:hello\n')
+            all_messages = text2.split('/')     
+            for message in all_messages:
+                content = message.split(':')
+                user = content[0]
+                text = content[1]
+                if(not user in messages_dict):
+                    messages_dict[user]=[]
+                messages_dict[user].append(text)
+            return messages_dict
+        elif(chat_type == NORMAL):
+            text2 = input('Mensagens: ex alo/hello\n')
+            messages = text2.split('/')
+            messages_dict={}
+            messages_dict[chat_name]=messages
+            return messages_dict
+        else:
+            print('Entrada inválida')
+            return
+    except:
+            print('Entrada inválida')
+            return
+
+# +1:iniciar/+2:entrar/+3:entrar/+4:entrar/+5:force/+5:entrar

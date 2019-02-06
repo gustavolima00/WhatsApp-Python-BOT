@@ -6,10 +6,12 @@ import time
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime, timedelta
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--no-sandbox')
-driver = webdriver.Chrome('chromedriver', service_args=["--verbose", "--log-path=/tmp/CHROMIUM_LOG"], options=chrome_options)
-driver.get('https://web.whatsapp.com/')
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument('--no-sandbox')
+# driver = webdriver.Chrome('chromedriver', service_args=["--verbose", "--log-path=/tmp/CHROMIUM_LOG"], options=chrome_options)
+# driver.get('https://web.whatsapp.com/')
+
+driver = None
 
 contacts = get_contacts()
 print('contacts', contacts)
@@ -92,8 +94,6 @@ while True:
                                 game.show_time(driver)
                             elif(message == 'extend'):
                                 game.extend(driver)
-                            elif(message == 'skip'):
-                                game.skip()
 
                         else:
                             send_text(driver, title, 'unknown_user', user)
