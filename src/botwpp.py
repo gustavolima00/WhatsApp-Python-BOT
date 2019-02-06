@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+from datetime import datetime, timedelta
 from random import randint
 from selenium.webdriver.common.action_chains import ActionChains
 import emoji
@@ -14,7 +15,8 @@ CHAT_FOCUSED = '._2EXPL._1f1zm'
 END_BUTTON = '_298R6'
 MESSAGE_TEXT = '._3zb-j.ZhF0n'
 SEARCH_BOX = '_2MSJr'
-SEARCH_CLOSE = 'C28xL'
+SEARCH_CLOSE = '.gQzdc._3sdhb'
+SEARCH_BUTTON = '.C28xL'
 MSG_BOX = '_1Plpp'
 SEND_BUTTON = '_35EW6'
 CHAT_TITLE = '._2zCDG'
@@ -43,22 +45,43 @@ def get_header(driver):
     return title
 
 def send_message(driver, username, text):
-    time.sleep(0.1)
-    if(username != get_header(driver)):
-        if(not find_user(driver, username)):
-            print('Falha achar usuário')
+    time_now = datetime.now() 
+    end_time = time_now + timedelta(seconds=10)
+    # Escrevendo mensagem
+    while True:
+        time_now = datetime.now() 
+        if(time_now>end_time):
+            print("Erro em send_message, tempo limite excedido")
             return False
-    try:
-        msg_box = driver.find_element_by_class_name(MSG_BOX)
-        clipboard.copy(text)
-        msg_box.send_keys(Keys.CONTROL, 'v')
-        time.sleep(0.1)
-        send_button = driver.find_element_by_class_name(SEND_BUTTON)
-        send_button.click()
-        return True
-    except:
-        print('Falha ao enviar mensagem')
-        return False
+        try:
+            # Achando usuário
+            while True:
+                time_now = datetime.now() 
+                if(time_now>end_time):
+                    print("Erro em send_message find_user, tempo limite excedido")
+                    return False
+                if(find_user(driver, username)):
+                    break
+            time.sleep(0.1)
+            msg_box = driver.find_element_by_class_name(MSG_BOX)
+            clipboard.copy(text)
+            msg_box.send_keys(Keys.CONTROL, 'v')
+            break
+        except:
+            pass
+    # Enviando mensagem
+    while True:
+        time_now = datetime.now() 
+        if(time_now>end_time):
+            print("Erro em send_message click_button, tempo limite excedido")
+            return False
+        try:
+            # Achando usuário
+            send_button = driver.find_element_by_class_name(SEND_BUTTON)
+            send_button.click()
+        except:
+            break    
+    return True
 
 
 def send_text(driver, username ,texts, *args):
@@ -85,29 +108,55 @@ def send_text(driver, username ,texts, *args):
 
 
 def find_user(driver, username):
+    time_now = datetime.now() 
+    end_time = time_now + timedelta(seconds=5)
+    if(username == get_header(driver)):
+        return True
     result = True
-    try:
-        search_box = driver.find_element_by_class_name(SEARCH_BOX)
-        search_box.send_keys(username)
-        time.sleep(0.3)
-    except:
-        print('Falha ao procurar conversa')
-        result = False
-    try:
-        user = driver.find_element_by_xpath(
-            '//span[@title = "{}"]'.format(username))
-        user.click()
-        time.sleep(0.1)
-    except:
-        print('Falha ao entrar na conversa')
-        result = False  
-    try:
-        search_close = driver.find_element_by_class_name(SEARCH_CLOSE)
-        search_close.click()
-    except:
-        print('Falha ao clicar no botao de voltar')
-        result = False  
+    # Fechando pesquisa anterior
+    while True:
+        time_now = datetime.now() 
+        if(time_now>end_time):
+            print("Erro em find_user, tempo limite excedido")
+            return False      
+        while True:
+            time_now = datetime.now()
+            if(time_now>end_time):
+                print("Erro em find_user(back_button 1) tempo limite excedido")
+                return False
+            try:
+                search_close = driver.find_element_by_css_selector(SEARCH_CLOSE)
+                button = search_close.find_element_by_css_selector(SEARCH_BUTTON)
+                button.click()
+            except:
+                break
+        try:
+            search_box = driver.find_element_by_class_name(SEARCH_BOX)
+            search_box.send_keys(username)
+        except:
+            continue
+        try:
+            user = driver.find_element_by_xpath(
+                '//span[@title = "{}"]'.format(username))
+            user.click()
+            if(username == get_header(driver)):
+                while True:
+                    time_now = datetime.now()
+                    if(time_now>end_time):
+                        print("Erro em find_user(back_button 2) tempo limite excedido")
+                        return False
+                    try:
+                        search_close = driver.find_element_by_css_selector(SEARCH_CLOSE)
+                        button = search_close.find_element_by_css_selector(SEARCH_BUTTON)
+                        button.click()
+                    except:
+                        break
+                break
+        except:
+            continue 
     return result
+
+
 # Abre conversas não lidas
 def get_unread_chats(driver):
     contents = driver.find_elements_by_css_selector(CHAT + UNREAD)

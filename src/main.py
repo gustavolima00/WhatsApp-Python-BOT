@@ -11,6 +11,8 @@ chrome_options.add_argument('--no-sandbox')
 driver = webdriver.Chrome('chromedriver', service_args=["--verbose", "--log-path=/tmp/CHROMIUM_LOG"], options=chrome_options)
 driver.get('https://web.whatsapp.com/')
 
+#driver = None #Para testes
+
 contacts = get_contacts()
 print('contacts', contacts)
 
@@ -19,18 +21,18 @@ game = Game(players)
 
 input('Insira o QR code e aperte enter')
 find_user(driver, 'SLEEP')
-time.sleep(3)
+time.sleep(1)
 
 while True:
     if('SLEEP' != get_header(driver)):    
         find_user(driver, 'SLEEP')
-        time.sleep(3)
+        time.sleep(1)
     game.game_check(driver)         
     try:
         unread_chats = get_unread_chats(driver)
         for contact_name in unread_chats:
             messages = get_messages(driver, contact_name)
-            title = get_header(driver)
+            title = contact_name
             print('Conversation:', title)
             print('Messages:', messages)
             #Se o título da conversa começa com + é uma pessoa
@@ -39,27 +41,27 @@ while True:
                     send_text(driver, title, 'bug_message')
                     continue
                 for message in messages[title][::-1]:
-                    message = message.lower()
                     run_command(driver, message, title)
-                    if(title in game.options):
+                    if(title in game.has_action):
                         for player in game.players:
-                            if(player.number == title):
+                            if(player.phone == title):
                                 game.run_action(driver, player, message)
                                 break
-                    if(message == 'name'):
+                    if(message.lower() == 'name'):
                         contacts[title] = 'unamed'
-                        send_text(driver, title, 'welcome')
+                        send_text(driver, title, 'change_name')
                     else:
                         if(title in contacts and contacts[title] != 'unamed'):
-                            if('oi' in message):
+                            if('oi' in message.lower()):
                                 send_text(driver, title, 'hello', contacts[title])
                         elif(title in contacts and contacts[title] == 'unamed'):
                             contacts[title] = message
-                            send_text(driver, title, 'change_name', contacts[title])
+                            send_text(driver, title, 'new_name', contacts[title])
                             save_contacts(contacts)
                         else:
                             contacts[title] = 'unamed'
                             send_text(driver, title, 'welcome')
+                            send_text(driver, title, 'change_name')
             # Comando para mensagens em grupo
             else:
                 for user in messages:
@@ -92,8 +94,6 @@ while True:
                                 game.show_time(driver)
                             elif(message == 'extend'):
                                 game.extend(driver)
-                            elif(message == 'skip'):
-                                game.skip()
 
                         else:
                             send_text(driver, title, 'unknown_user', user)
