@@ -1,4 +1,4 @@
-from  botwpp_test import *
+from  botwpp import *
 import random
 from random import randint
 import emoji
@@ -21,7 +21,7 @@ LYNCH = 3
 QNT_MIN = 2
 # Roles
 VG_ROLES = ['villager']
-VG_ESPECIAL = ['drunk']
+VG_ESPECIAL = ['drunk', 'seer']
 NUM_VG_ROLES = len(VG_ROLES)
 WW_ROLES = ['wolf']
 NUM_WW_ROLES = len(WW_ROLES)
@@ -58,7 +58,9 @@ class Player:
         elif(self.role == 'wolf'):
             return emoji.emojize('Lobisomem :wolf_face:')
         elif(self.role == 'drunk'):
-            return emoji.emojize('Bebum :clinking_beer_mugs:')    
+            return emoji.emojize('Bebum :clinking_beer_mugs:')
+        elif(self.role == 'seer'):
+            return emoji.emojize('Vidente :person_wearing_turban:')
         else:
             return ''
             
@@ -73,6 +75,7 @@ class Game:
         self.time_now = datetime.now() 
         self.next_time = self.time_now- timedelta(minutes=5)
         self.game_time = 0 #Day, night ou lynch 
+        self.seer_vision = None
         self.has_action = {}
         self.actions = {}
         self.can_attack = True
@@ -227,15 +230,24 @@ class Game:
 
     def end_game(self, driver):
         send_message(driver, self.group_name, 'O jogo foi finalizado')
+        for player in self.players:
+            player = Player(player.phone, player.name)
+        self.players = []
         self.num_players = 0
         self.num_ww = 0
         self.num_vg = 0
         self.status = OFF
         self.group_name = ''
+        self.time_now = datetime.now() 
+        self.next_time = self.time_now- timedelta(minutes=5)
         self.game_time = 0
-        self.has_action.clear()
-        self.actions.clear()
-        self.players.clear()
+        self.seer_vision = None
+        self.has_action = {}
+        self.actions = {}
+        self.can_attack = True
+        self.can_lynch = True
+        self.voted_players = {}
+        self.clear_votes()
 
     def show_time(self, driver):
         time_remaning = (self.next_time - self.time_now).seconds
@@ -307,6 +319,10 @@ class Game:
                 for other_player in self.players:
                     if(other_player.role_type == WW and other_player.status == ALIVE and player != other_player):
                         send_text(driver, other_player.phone, 'player_voted_kill', player.name, chosen_player.name)
+            elif(player.role_type == VG):
+                if(player.role == 'seer'):
+                    self.seer_vision = chosen_player.name + ' é ' + chosen_player.get_role()
+
         # Linchamento 
         elif(self.game_time == LYNCH):
             try:
@@ -341,6 +357,7 @@ class Game:
         self.has_action.clear()
         self.next_time = self.time_now + timedelta(seconds=90)
         self.game_time = DAY
+        self.send_seer_vision(driver)
         self.send_actions(driver)
         send_text(driver, self.group_name, 'day')
         self.show_players(driver)
@@ -370,6 +387,9 @@ class Game:
             send_text(driver, eaten_player.phone, 'wolves_eat_you')
             if(eaten_player.role == 'drunk'):
                 send_text(driver, self.group_name, 'drunk_eaten', eaten_player.name)
+                self.can_attack = False
+            elif(eaten_player.role == 'seer'):
+                send_text(driver, self.group_name, 'seer_eaten', eaten_player.name, eaten_player.name)
                 self.can_attack = False
             else:
                 send_text(driver, self.group_name, 'default_eaten', eaten_player.name)
@@ -401,7 +421,6 @@ class Game:
         self.clear_votes() 
 
     def send_actions(self, driver):
-        random.shuffle(self.players)
         # Ações do dia
         if(self.game_time == DAY):
             pass
@@ -409,14 +428,23 @@ class Game:
         elif(self.game_time == NIGHT):
             for player in self.players:
                 if(player.status == ALIVE):
+                    #Ações de lobisomens
                     if(player.role_type == WW and self.can_attack):
                         self.has_action[player.phone]=[]
+                        random.shuffle(self.players)
                         for other_player in self.players:
-                            if(other_player.status == ALIVE and other_player.role_type != WW):
-                                if(other_player !=  player):
-                                    self.has_action[player.phone].append(other_player)                    
+                            if(other_player.status == ALIVE and other_player.role_type != WW and other_player !=  player):
+                                self.has_action[player.phone].append(other_player)                    
                         send_action(driver, 'kill', player.phone, self.has_action[player.phone])
+                    #Ações de villagers
                     elif(player.role_type == VG):
+                        if(player.role == 'seer'):
+                            self.has_action[player.phone]=[]
+                            random.shuffle(self.players)
+                            for other_player in self.players:
+                                if(other_player.status == ALIVE and other_player != player):
+                                    self.has_action[player.phone].append(other_player)
+                            send_action(driver, 'see', player.phone, self.has_action[player.phone])
                         pass
                     else:
                         pass
@@ -428,6 +456,7 @@ class Game:
                 for player in self.players:
                     if(player.status == ALIVE):
                         self.has_action[player.phone]=[]
+                        random.shuffle(self.players)
                         for other_player in self.players:
                             if(other_player.status == ALIVE):
                                 if(other_player != player):
@@ -436,6 +465,11 @@ class Game:
                 if(not self.can_lynch):
                     self.can_lynch = True
 
+    def send_seer_vision(self, driver):
+        for player in self.players:
+            if(player.role == 'seer' and player.status == ALIVE and self.seer_vision != None):
+                send_message(driver, player.phone, self.seer_vision)
+                self.seer_vision = None
     def kill(self, player):
         if(player.role_type == WW):
             self.num_ww-=1
@@ -500,6 +534,7 @@ def send_action(driver, action, user, other_players):
         arq.close()
         random_num = randint(0, num-1)
         message += phrases[random_num]
+        message += '\n'
     except FileNotFoundError:
         print('Erro em send_action')
         return
