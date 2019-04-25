@@ -19,7 +19,7 @@ SEARCH_CLOSE = '.gQzdc._3sdhb'
 SEARCH_BUTTON = '.C28xL'
 MSG_BOX = '_1Plpp'
 SEND_BUTTON = '_35EW6'
-CHAT_TITLE = '._2zCDG'
+CHAT_TITLE = '._3XrHh'
 NAME_IN_GROUP = '.RZ7GO'
 NUM_MESSAGES = '._1mq8g'
 # Class message
@@ -38,8 +38,8 @@ TAIL = '.tail'
 
 def get_header(driver):
     try:
-        header = driver.find_elements_by_css_selector(CHAT_TITLE)
-        title = header[0].text
+        header = driver.find_element_by_css_selector(CHAT_TITLE)
+        title = header.text
     except:
         title = ''
     return title
