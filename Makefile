@@ -4,3 +4,4 @@ build:
 	apt-get install xsel
 	apt-get install xclip
 	pip install -r requirements.txt	
+	cp src/chromedriver /usr/local/bin
